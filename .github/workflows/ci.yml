@@ -1,0 +1,128 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: admin
+          POSTGRES_USER: admin
+          POSTGRES_DB: demounittest01
+        ports:
+          - 65432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore Demo.sln
+    
+    - name: Build
+      run: dotnet build Demo.sln --no-restore --configuration Release
+    
+    - name: Run Unit Tests
+      run: |
+        dotnet test Tests/Demo.AppCore.Tests/Demo.AppCore.Tests.csproj \
+          --no-build \
+          --configuration Release \
+          --verbosity normal \
+          --collect:"XPlat Code Coverage" \
+          --logger trx \
+          --results-directory ./TestResults
+    
+    - name: Run Integration Tests
+      run: |
+        dotnet test Tests/Demo.Api.IntegrationTests/Demo.Api.IntegrationTests.csproj \
+          --no-build \
+          --configuration Release \
+          --verbosity normal \
+          --collect:"XPlat Code Coverage" \
+          --logger trx \
+          --results-directory ./TestResults
+      env:
+        ConnectionStrings__DefaultConnection: "Server=localhost;Port=65432;Database=demounittest01;User ID=admin;Password=admin;Include Error Detail=true;"
+    
+    - name: Generate Coverage Report
+      run: |
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        reportgenerator \
+          -reports:"./TestResults/**/coverage.cobertura.xml" \
+          -targetdir:"./TestResults/CoverageReport" \
+          -reporttypes:"Html;Cobertura" \
+          -verbosity:Info
+    
+    - name: Check Coverage Threshold
+      run: |
+        # Extract coverage percentage from the report
+        COVERAGE=$(grep -oP 'line-rate="\K[^"]+' ./TestResults/CoverageReport/Cobertura.xml | head -1)
+        COVERAGE_PERCENT=$(echo "$COVERAGE * 100" | bc -l | cut -d. -f1)
+        
+        echo "Code Coverage: $COVERAGE_PERCENT%"
+        
+        if [ "$COVERAGE_PERCENT" -lt 80 ]; then
+          echo "❌ Code coverage ($COVERAGE_PERCENT%) is below the required threshold (80%)"
+          exit 1
+        else
+          echo "✅ Code coverage ($COVERAGE_PERCENT%) meets the required threshold (80%)"
+        fi
+    
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: ./TestResults
+    
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report
+        path: ./TestResults/CoverageReport
+
+  build-and-publish:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore Demo.sln
+    
+    - name: Build for Production
+      run: dotnet build Demo.sln --configuration Release --no-restore
+    
+    - name: Publish API
+      run: dotnet publish Presentations/Demo.Api/Demo.Api.csproj --configuration Release --no-build --output ./publish
+    
+    - name: Upload Publish Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: published-app
+        path: ./publish

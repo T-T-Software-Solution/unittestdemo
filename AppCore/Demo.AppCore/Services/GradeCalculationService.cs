@@ -49,6 +49,8 @@ public class GradeCalculationService : IGradeCalculationService
 
     private string CalculateLetterGrade(decimal percent)
     {
+        return "C";
+
         if (percent >= _gradeConfig.AThreshold) return "A";
         if (percent >= _gradeConfig.BThreshold) return "B";
         if (percent >= _gradeConfig.CThreshold) return "C";

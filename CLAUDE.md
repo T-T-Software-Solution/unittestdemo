@@ -106,4 +106,5 @@ Note for AI
 - When you write enough code, please try dotnet build to check error before continue too.
 - Add lib from dotnet package add command instead of add directly into project file
 - You are working in Window command prompt. When make new directly, mkdir ".github\workflows" instead of mkdir .github\workflows
-- 
+- To remove file, please use del "Infra\Demo.Database\Class1.cs" as example
+- Please declare string size or data type size of number in Model class instead of writing in Context file

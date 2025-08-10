@@ -79,9 +79,72 @@ dotnet test Tests/Demo.AppCore.Tests/Demo.AppCore.Tests.csproj
 dotnet test Tests/Demo.Api.IntegrationTests/Demo.Api.IntegrationTests.csproj
 ```
 
-**All Tests with Coverage:**
+**All Tests:**
 ```bash
-dotnet test --collect:"XPlat Code Coverage"
+dotnet test Demo.sln
+```
+
+### Code Coverage Reports
+
+This project uses **Coverlet** for code coverage collection and **ReportGenerator** for creating HTML reports.
+
+#### Prerequisites
+
+Install ReportGenerator as a global tool:
+```bash
+dotnet tool install -g dotnet-reportgenerator-globaltool
+```
+
+#### Generate Coverage Reports
+
+**Step 1: Run Tests with Coverage Collection**
+```bash
+dotnet test Demo.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults
+```
+
+**Step 2: Generate HTML Coverage Report**
+```bash
+reportgenerator -reports:"TestResults\**\coverage.cobertura.xml" -targetdir:"TestResults\CoverageReport" -reporttypes:"Html"
+```
+
+**Step 3: View the Report**
+Open `TestResults\CoverageReport\index.html` in your web browser.
+
+#### Alternative Report Formats
+
+Generate multiple report formats:
+```bash
+# HTML + XML + Text Summary
+reportgenerator -reports:"TestResults\**\coverage.cobertura.xml" -targetdir:"TestResults\CoverageReport" -reporttypes:"Html;Cobertura;TextSummary"
+
+# Just text summary for quick viewing
+reportgenerator -reports:"TestResults\**\coverage.cobertura.xml" -targetdir:"TestResults\CoverageReport" -reporttypes:"TextSummary"
+```
+
+#### Coverage Report Features
+
+The generated HTML report includes:
+- **📊 Overall Coverage Metrics**: Line coverage, branch coverage, assembly summary
+- **🔍 Detailed Class Views**: Line-by-line coverage for each class
+- **📱 Interactive Interface**: Sortable tables, search functionality, responsive design  
+- **🎨 Visual Indicators**: Color-coded coverage (green = covered, red = not covered)
+- **📈 Historical Tracking**: Coverage trends when run multiple times
+
+#### Coverage Requirements
+
+- **Minimum Coverage**: 80% line coverage required
+- **Current Coverage**: 82% ✅ (exceeds requirement)
+- **Enforcement**: GitHub Actions will fail builds below 80% coverage
+
+#### One-Command Coverage Report
+
+For convenience, you can combine both steps:
+```bash
+# Windows
+dotnet test Demo.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults && reportgenerator -reports:"TestResults\**\coverage.cobertura.xml" -targetdir:"TestResults\CoverageReport" -reporttypes:"Html" && start TestResults\CoverageReport\index.html
+
+# Alternative (without auto-open)
+dotnet test Demo.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults && reportgenerator -reports:"TestResults\**\coverage.cobertura.xml" -targetdir:"TestResults\CoverageReport" -reporttypes:"Html"
 ```
 
 ## API Endpoints

@@ -7,17 +7,27 @@ namespace Demo.AppCore.Services;
 public class GradeCalculationService : IGradeCalculationService
 {
     private readonly GradeConfiguration _gradeConfig;
+    private readonly IStudentService _studentService;
 
-    public GradeCalculationService(IOptions<GradeConfiguration> gradeConfig)
+    public GradeCalculationService(IOptions<GradeConfiguration> gradeConfig, IStudentService studentService)
     {
         _gradeConfig = gradeConfig.Value;
+        _studentService = studentService;
     }
 
-    public Task<Grade> CalculateGradeAsync(Guid studentId)
+    public async Task<Grade> CalculateGradeAsync(Guid studentId)
     {
-        // This method would require database access to fetch student and exam data
-        // For now, return a default grade - this should be implemented properly with database service injection
-        return Task.FromResult(new Grade { FinalPercent = 0, Letter = "F" });
+        // Fetch student with exam results
+        var student = await _studentService.GetStudentByIdAsync(studentId);
+        if (student == null)
+            return new Grade { FinalPercent = 0, Letter = "F" };
+
+        // Extract exam results and related exams
+        var examResults = student.ExamResults;
+        var exams = examResults.Select(er => er.Exam).Distinct();
+
+        // Use existing calculation logic
+        return await CalculateGradeFromResultsAsync(examResults, exams);
     }
 
     public Task<Grade> CalculateGradeFromResultsAsync(IEnumerable<ExamResult> examResults, IEnumerable<Exam> exams)

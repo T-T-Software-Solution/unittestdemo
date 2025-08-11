@@ -1,3 +1,4 @@
+using Demo.AppCore.Interfaces;
 using Demo.AppCore.Models;
 using Demo.AppCore.Services;
 using Microsoft.Extensions.Options;
@@ -8,6 +9,7 @@ namespace Demo.AppCore.Tests.Services;
 public class GradeCalculationServiceTests
 {
     private readonly Mock<IOptions<GradeConfiguration>> _mockOptions;
+    private readonly Mock<IStudentService> _mockStudentService;
     private readonly GradeCalculationService _gradeService;
     private readonly GradeConfiguration _gradeConfig;
 
@@ -25,7 +27,9 @@ public class GradeCalculationServiceTests
         _mockOptions = new Mock<IOptions<GradeConfiguration>>();
         _mockOptions.Setup(x => x.Value).Returns(_gradeConfig);
 
-        _gradeService = new GradeCalculationService(_mockOptions.Object);
+        _mockStudentService = new Mock<IStudentService>();
+
+        _gradeService = new GradeCalculationService(_mockOptions.Object, _mockStudentService.Object);
     }
 
     [Fact]

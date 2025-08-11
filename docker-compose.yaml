@@ -1,0 +1,16 @@
+name: unit-test-postgres
+services:
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=demounittest01
+    ports:
+      - '65432:5432'
+    volumes:
+    - postgres:/var/lib/postgresql/data
+volumes:
+  postgres:
+    driver: local

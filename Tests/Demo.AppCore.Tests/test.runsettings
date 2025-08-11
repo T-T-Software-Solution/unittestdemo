@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <!-- Sets the reporter switch for xUnit to use Allure -->
+    <EnvironmentVariables>
+      <ALLURE_RESULTS_DIRECTORY>allure-results</ALLURE_RESULTS_DIRECTORY>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>

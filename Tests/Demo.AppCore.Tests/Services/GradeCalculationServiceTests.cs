@@ -3,9 +3,13 @@ using Demo.AppCore.Models;
 using Demo.AppCore.Services;
 using Microsoft.Extensions.Options;
 using Moq;
+using Allure.Xunit.Attributes;
+using Allure.Net.Commons;
 
 namespace Demo.AppCore.Tests.Services;
 
+[AllureFeature("Grade Calculation")]
+[AllureSuite("Unit Tests")]
 public class GradeCalculationServiceTests
 {
     private readonly Mock<IOptions<GradeConfiguration>> _mockOptions;
@@ -33,6 +37,9 @@ public class GradeCalculationServiceTests
     }
 
     [Fact]
+    [AllureStory("Weighted Grade Calculation")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("Verify that the grade calculation correctly computes weighted averages from multiple exam results")]
     public async Task CalculateGradeFromResultsAsync_WithValidResults_ReturnsCorrectWeightedGrade()
     {
         // Arrange
@@ -57,6 +64,9 @@ public class GradeCalculationServiceTests
     }
 
     [Fact]
+    [AllureStory("Edge Cases")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Verify that students with no exam results receive a zero grade")]
     public async Task CalculateGradeFromResultsAsync_WithNoResults_ReturnsZeroGrade()
     {
         // Arrange
@@ -73,6 +83,9 @@ public class GradeCalculationServiceTests
     }
 
     [Fact]
+    [AllureStory("Score Validation")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Verify that scores above maximum are clamped to the maximum value")]
     public async Task CalculateGradeFromResultsAsync_WithScoreAboveMax_ClampsScore()
     {
         // Arrange
@@ -93,6 +106,9 @@ public class GradeCalculationServiceTests
     }
 
     [Fact]
+    [AllureStory("Score Validation")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Verify that negative scores are clamped to zero")]
     public async Task CalculateGradeFromResultsAsync_WithNegativeScore_ClampsToZero()
     {
         // Arrange
@@ -123,6 +139,9 @@ public class GradeCalculationServiceTests
     [InlineData(60, "D")]
     [InlineData(59.99, "F")]
     [InlineData(0, "F")]
+    [AllureStory("Letter Grade Assignment")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("Verify that numeric scores are correctly converted to letter grades based on thresholds")]
     public async Task CalculateGradeFromResultsAsync_WithDifferentScores_ReturnsCorrectLetterGrade(decimal score, string expectedLetter)
     {
         // Arrange
@@ -141,6 +160,9 @@ public class GradeCalculationServiceTests
     }
 
     [Fact]
+    [AllureStory("Exam Weight Handling")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Verify that exams with zero max score are properly ignored in grade calculations")]
     public async Task CalculateGradeFromResultsAsync_WithExamMaxScoreZero_IgnoresExam()
     {
         // Arrange

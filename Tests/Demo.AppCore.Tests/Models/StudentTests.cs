@@ -1,10 +1,17 @@
 using Demo.AppCore.Models;
+using Allure.Xunit.Attributes;
+using Allure.Net.Commons;
 
 namespace Demo.AppCore.Tests.Models;
 
+[AllureFeature("Student Model")]
+[AllureSuite("Unit Tests")]
 public class StudentTests
 {
     [Fact]
+    [AllureStory("Student Creation")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Verify that a new Student instance is created with default values")]
     public void Student_Creation_ShouldInitializeWithDefaultValues()
     {
         // Arrange & Act
@@ -22,6 +29,9 @@ public class StudentTests
     }
 
     [Fact]
+    [AllureStory("Student Properties")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("Verify that Student properties can be set and retrieved correctly")]
     public void Student_Properties_ShouldSetAndGetCorrectly()
     {
         // Arrange
@@ -46,6 +56,9 @@ public class StudentTests
     }
 
     [Fact]
+    [AllureStory("Student Exam Results")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Verify that Student can accept a collection of ExamResults")]
     public void Student_ExamResults_ShouldAcceptCollection()
     {
         // Arrange

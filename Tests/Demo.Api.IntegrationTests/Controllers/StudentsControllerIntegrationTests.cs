@@ -5,9 +5,13 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Demo.Database.Context;
 using Microsoft.EntityFrameworkCore;
+using Allure.Xunit.Attributes;
+using Allure.Net.Commons;
 
 namespace Demo.Api.IntegrationTests.Controllers;
 
+[AllureFeature("Students API")]
+[AllureSuite("Integration Tests")]
 public class StudentsControllerIntegrationTests : IClassFixture<TestWebApplicationFactory>, IAsyncLifetime
 {
     private readonly TestWebApplicationFactory _factory;
@@ -30,6 +34,9 @@ public class StudentsControllerIntegrationTests : IClassFixture<TestWebApplicati
     }
 
     [Fact]
+    [AllureStory("Get Students")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("Verify that GET /api/students returns an empty list when no students exist")]
     public async Task GetStudents_ShouldReturnEmptyList_WhenNoStudentsExist()
     {
         // Arrange & Act
@@ -44,6 +51,9 @@ public class StudentsControllerIntegrationTests : IClassFixture<TestWebApplicati
     }
 
     [Fact]
+    [AllureStory("Create Student")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("Verify that POST /api/students creates a new student with valid data")]
     public async Task CreateStudent_ShouldReturnCreatedStudent_WithValidData()
     {
         // Arrange
@@ -77,6 +87,9 @@ public class StudentsControllerIntegrationTests : IClassFixture<TestWebApplicati
     }
 
     [Fact]
+    [AllureStory("Get Student by ID")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("Verify that GET /api/students/{id} returns the correct student when it exists")]
     public async Task GetStudent_ShouldReturnStudent_WhenStudentExists()
     {
         // Arrange - Create a student first
@@ -95,6 +108,9 @@ public class StudentsControllerIntegrationTests : IClassFixture<TestWebApplicati
     }
 
     [Fact]
+    [AllureStory("Get Student by ID")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Verify that GET /api/students/{id} returns 404 when student does not exist")]
     public async Task GetStudent_ShouldReturnNotFound_WhenStudentDoesNotExist()
     {
         // Arrange
@@ -108,6 +124,9 @@ public class StudentsControllerIntegrationTests : IClassFixture<TestWebApplicati
     }
 
     [Fact]
+    [AllureStory("Update Student")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("Verify that PUT /api/students/{id} updates student with valid data")]
     public async Task UpdateStudent_ShouldReturnUpdatedStudent_WithValidData()
     {
         // Arrange - Create a student first
@@ -128,6 +147,9 @@ public class StudentsControllerIntegrationTests : IClassFixture<TestWebApplicati
     }
 
     [Fact]
+    [AllureStory("Delete Student")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("Verify that DELETE /api/students/{id} removes student and returns 204")]
     public async Task DeleteStudent_ShouldReturnNoContent_WhenStudentExists()
     {
         // Arrange - Create a student first
@@ -145,6 +167,9 @@ public class StudentsControllerIntegrationTests : IClassFixture<TestWebApplicati
     }
 
     [Fact]
+    [AllureStory("Student Grade Calculation")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Verify that GET /api/students/{id}/grade returns zero grade when student has no exam results")]
     public async Task GetStudentGrade_ShouldReturnZeroGrade_WhenNoExamResults()
     {
         // Arrange - Create a student first

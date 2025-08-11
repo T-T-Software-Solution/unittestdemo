@@ -4,9 +4,13 @@ using System.Net;
 using System.Net.Http.Json;
 using Demo.Database.Context;
 using Microsoft.EntityFrameworkCore;
+using Allure.Xunit.Attributes;
+using Allure.Net.Commons;
 
 namespace Demo.Api.IntegrationTests.Controllers;
 
+[AllureFeature("Grade Calculation API")]
+[AllureSuite("Integration Tests")]
 public class GradeCalculationIntegrationTests : IClassFixture<TestWebApplicationFactory>, IAsyncLifetime
 {
     private readonly TestWebApplicationFactory _factory;

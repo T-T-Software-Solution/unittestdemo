@@ -3,9 +3,13 @@ using Demo.AppCore.Models;
 using Demo.AppCore.Services;
 using Microsoft.Extensions.Options;
 using Moq;
+using Allure.Xunit.Attributes;
+using Allure.Net.Commons;
 
 namespace Demo.AppCore.Tests.Services;
 
+[AllureFeature("Grade Calculation with Database")]
+[AllureSuite("Unit Tests")]
 public class GradeCalculationServiceDatabaseTests
 {
     private readonly Mock<IOptions<GradeConfiguration>> _mockOptions;

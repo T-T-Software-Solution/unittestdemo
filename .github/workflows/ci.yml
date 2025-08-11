@@ -48,6 +48,8 @@ jobs:
           --collect:"XPlat Code Coverage" \
           --logger trx \
           --results-directory ./TestResults
+      env:
+        ALLURE_RESULTS_DIRECTORY: "./TestResults/allure-results-unit"
     
     - name: Run Integration Tests
       run: |
@@ -60,7 +62,32 @@ jobs:
           --results-directory ./TestResults
       env:
         ConnectionStrings__DefaultConnection: "Server=localhost;Port=65432;Database=demounittest01;User ID=admin;Password=admin;Include Error Detail=true;"
+        ALLURE_RESULTS_DIRECTORY: "./TestResults/allure-results-integration"
     
+    - name: Install Allure CLI
+      run: |
+        wget https://github.com/allure-framework/allure2/releases/download/2.24.1/allure-2.24.1.tgz
+        tar -zxvf allure-2.24.1.tgz
+        sudo mv allure-2.24.1 /opt/allure
+        sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+        allure --version
+
+    - name: Merge Allure Results
+      run: |
+        mkdir -p ./TestResults/allure-results
+        if [ -d "./TestResults/allure-results-unit" ]; then
+          cp -r ./TestResults/allure-results-unit/* ./TestResults/allure-results/ || true
+        fi
+        if [ -d "./TestResults/allure-results-integration" ]; then
+          cp -r ./TestResults/allure-results-integration/* ./TestResults/allure-results/ || true
+        fi
+
+    - name: Generate Allure Report
+      run: |
+        allure generate ./TestResults/allure-results \
+          --output ./TestResults/AllureReport \
+          --clean
+        
     - name: Generate Coverage Report
       run: |
         dotnet tool install -g dotnet-reportgenerator-globaltool
@@ -91,6 +118,13 @@ jobs:
       with:
         name: test-results
         path: ./TestResults
+        
+    - name: Upload Allure Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: allure-report
+        path: ./TestResults/AllureReport
     
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v4
@@ -98,6 +132,14 @@ jobs:
       with:
         name: coverage-report
         path: ./TestResults/CoverageReport
+        
+    - name: Deploy Allure Report to GitHub Pages
+      if: github.ref == 'refs/heads/main' && always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./TestResults/AllureReport
+        destination_dir: allure-report
 
   build-and-publish:
     needs: test

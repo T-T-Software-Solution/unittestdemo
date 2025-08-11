@@ -108,3 +108,4 @@ Note for AI
 - You are working in Window command prompt. When make new directly, mkdir ".github\workflows" instead of mkdir .github\workflows
 - To remove file, please use del "Infra\Demo.Database\Class1.cs" as example
 - Please declare string size or data type size of number in Model class instead of writing in Context file
+- Any path in window should cover by double quote and use "\" as directory separation

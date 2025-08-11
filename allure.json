@@ -1,0 +1,12 @@
+{
+  "allure": {
+    "directory": "allure-results",
+    "links": [
+      {
+        "name": "Repository",
+        "url": "https://github.com/yourusername/unittestdemo",
+        "type": "repository"
+      }
+    ]
+  }
+}

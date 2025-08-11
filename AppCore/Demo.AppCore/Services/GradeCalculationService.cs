@@ -59,7 +59,7 @@ public class GradeCalculationService : IGradeCalculationService
 
     private string CalculateLetterGrade(decimal percent)
     {
-        //return "C"; // Simple code to make fail in test for validate result in Github Action and Test Result
+        return "C"; // Simple code to make fail in test for validate result in Github Action and Test Result
 
         if (percent >= _gradeConfig.AThreshold) return "A";
         if (percent >= _gradeConfig.BThreshold) return "B";

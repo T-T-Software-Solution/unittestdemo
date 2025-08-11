@@ -149,6 +149,12 @@ dotnet test Demo.sln --collect:"XPlat Code Coverage" --results-directory ./TestR
 reportgenerator -reports:"TestResults\**\coverage.cobertura.xml" -targetdir:"TestResults\CoverageReport" -reporttypes:"Html"
 ```
 
+ถ้ารันไม่ได้ใน Mac 
+แนะนำให้ลองรัน Command นี้
+```
+~/.dotnet/tools/reportgenerator -reports:"TestResults/**/*.cobertura.xml" -targetdir:"TestResults/CoverageReport" -reporttypes:"Html"
+```
+
 **Step 3: View the Report**
 Open `TestResults\CoverageReport\index.html` in your web browser.
 

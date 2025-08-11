@@ -1,5 +1,7 @@
 # Demo Unit Test Project
 
+![Creating Effective Unit Tests #3](Document/Landing_Image.png)
+
 A comprehensive C# ASP.NET Core API project demonstrating unit testing best practices with Clean Architecture.
 
 ## Features

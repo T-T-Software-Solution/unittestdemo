@@ -46,10 +46,50 @@ A comprehensive C# ASP.NET Core API project demonstrating unit testing best prac
 
 ### Database Setup
 
-The application uses PostgreSQL with the following default connection:
+The application uses PostgreSQL with the following default connection for development:
 ```
 Server=localhost;Port=65432;Database=demounittest01;User ID=admin;Password=admin;Include Error Detail=true;
 ```
+
+#### Using Real Database with User Secrets (Recommended)
+
+For production or when using a real database, use .NET User Secrets to store sensitive connection strings:
+
+**Step 1: Initialize User Secrets**
+```bash
+cd Presentations/Demo.Api
+dotnet user-secrets init
+```
+
+**Step 2: Set Connection String**
+```bash
+# Replace with your actual database connection string
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=your-server;Port=5432;Database=your-db;User ID=your-user;Password=your-password;Include Error Detail=true;"
+```
+
+**Step 3: Verify Secrets**
+```bash
+dotnet user-secrets list
+```
+
+**Environment Variables (Alternative)**
+You can also use environment variables:
+```bash
+# Windows
+set ConnectionStrings__DefaultConnection="Server=your-server;Port=5432;Database=your-db;User ID=your-user;Password=your-password"
+
+# Linux/macOS
+export ConnectionStrings__DefaultConnection="Server=your-server;Port=5432;Database=your-db;User ID=your-user;Password=your-password"
+```
+
+**Production Configuration**
+For production deployments, use:
+- Azure Key Vault
+- AWS Secrets Manager
+- Kubernetes Secrets
+- Environment variables in secure hosting platforms
+
+> **⚠️ Security Note**: Never commit connection strings with credentials to source control. Always use user secrets, environment variables, or secure key management services.
 
 ### Running the Application
 
@@ -189,6 +229,30 @@ Optional API key authentication can be enabled in production:
 - Set `ApiKeyRequired: true` in configuration
 - Include `X-Api-Key` header with requests
 - Default key: `demo-api-key-12345`
+
+## Screenshots and Examples
+
+### VS Code Test Runner
+![Running Tests in VS Code](Document/Example_Run_All_Test_In_VS_Code.png)
+
+### Code Coverage Report
+![Coverage Report Example](Document/Example_CoverageReport.png)
+
+### GitHub Actions CI/CD Pipeline
+![GitHub Actions Workflow](Document/GithubAction_Run_Test_Result.png)
+
+### CI/CD Artifacts
+![GitHub Actions Artifacts](Document/Artifacts_In_GithubAction_After_Push_Code.png)
+
+## Additional Resources
+
+This project demonstrates practical unit testing techniques and Clean Architecture patterns. For detailed insights on creating effective unit tests, check out these articles:
+
+📚 **Related Articles (Thai):**
+- [การสร้าง Unit Test ที่มีประสิทธิภาพ ลดภาระ เพิ่มคุณค่า เพื่อ Unit Test ที่ยั่งยืน](https://medium.com/t-t-software-solution/%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87-unit-test-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%B4%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B8%A0%E0%B8%B2%E0%B8%9E-%E0%B8%A5%E0%B8%94%E0%B8%A0%E0%B8%B2%E0%B8%A3%E0%B8%B0-%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B8%84%E0%B8%B8%E0%B8%93%E0%B8%84%E0%B9%88%E0%B8%B2-%E0%B9%80%E0%B8%9E%E0%B8%B7%E0%B9%88%E0%B8%AD-unit-test-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%B1%E0%B9%88%E0%B8%87%E0%B8%A2%E0%B8%B7%E0%B8%99-5473d7e9b686) - Best practices for sustainable unit testing
+- [การสร้าง Unit Test ที่มีประสิทธิภาพ 2 ต่อจาก Week ที่แล้ว](https://medium.com/t-t-software-solution/%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87-unit-test-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%B4%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B8%A0%E0%B8%B2%E0%B8%9E-2-%E0%B8%95%E0%B9%88%E0%B8%AD%E0%B8%88%E0%B8%B2%E0%B8%81-week-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B9%81%E0%B8%A5%E0%B9%89%E0%B8%A7-a843f7357da0) - Advanced unit testing patterns and techniques
+
+These articles provide deep insights into the principles and practices demonstrated in this codebase.
 
 ## Contributing
 
